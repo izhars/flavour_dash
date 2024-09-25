@@ -2,10 +2,10 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
-const connectDB = require('./config/db'); // Import the MongoDB connection function
-const authenticateToken = require('./middleware/auth'); // Import the authentication middleware
-const productRoutes = require('./routes/productRoutes'); // Import product routes
-const authRoutes = require('./routes/authRoutes'); // Import authentication routes
+const connectDB = require('../config/db'); // Import the MongoDB connection function
+const authenticateToken = require('../middleware/auth'); // Import the authentication middleware
+const productRoutes = require('../routes/productRoutes'); // Import product routes
+const authRoutes = require('../routes/authRoutes'); // Import authentication routes
 
 // Initialize Express app
 const app = express();
