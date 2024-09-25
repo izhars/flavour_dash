@@ -1,45 +1,52 @@
 const mongoose = require('mongoose');
 
 const productSchema = new mongoose.Schema({
+
+  id: {
+    type: Number,
+    required: true,
+  }, 
   name: {
     type: String,
-    required: [true, 'Product name is required'],
-  },
-  price: {
-    type: Number,
-    required: [true, 'Product price is required'],
+    required: true,
   },
   description: {
     type: String,
-    required: [true, 'Product description is required'],
+    required: true,
   },
-  category: {
-    type: String,
-    required: [true, 'Product category is required'],
+  price: {
+    type: Number,
+    required: true,
   },
-  roastLevel: {
+  region: {
     type: String,
-    enum: ['Light', 'Medium', 'Dark'],
-    required: [true, 'Roast level is required'],
+    required: true,
   },
-  origin: {
-    type: String,
-    required: [true, 'Origin is required'],
+  weight: {
+    type: Number,
+    required: true,
   },
-  beanType: {
-    type: String,
-    required: [true, 'Bean type is required'],
+  flavor_profile: {
+    type: [String], // Array of strings
+    required: true,
   },
-  grindSize: {
-    type: String,
-    enum: ['Whole Bean', 'Coarse', 'Medium', 'Fine'],
-    required: [true, 'Grind size is required'],
+  grind_option: {
+    type: [String], // Array of strings
+    required: true,
   },
-  mainPic: {
+  roast_level: {
+    type: Number,
+    required: true,
+    min: 1,
+    max: 5, // Assuming roast level is between 1 and 5
+  },
+  image_url: {
     type: String,
-    required: [true, 'Main picture URL is required'],
+    required: true,
   },
   subPics: [String], // Array of URLs for sub-pictures
-});
+}, { timestamps: true });
 
-module.exports = mongoose.model('Product', productSchema);
+const Product = mongoose.model('Product', productSchema);
+
+module.exports = Product;

@@ -15,7 +15,7 @@ const getProducts = async (req, res) => {
 // @route   GET /api/products/:id
 const getProductById = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
+    const product = await Product.findOne({ id: req.params.id }); // Use findOne
     if (product) {
       res.json(product);
     } else {
@@ -30,35 +30,42 @@ const getProductById = async (req, res) => {
 // @route   POST /api/products
 const createProduct = async (req, res) => {
   const {
+    id,
     name,
     price,
     description,
-    category,
-    roastLevel,
-    origin,
-    beanType,
-    grindSize,
-    mainPic,
-    subPics
+    region,
+    weight,
+    flavor_profile,
+    grind_option,
+    roast_level,
+    image_url,
+    subPic
   } = req.body;
 
   // Validate required fields
-  if (!name || !price || !description || !category || !roastLevel || !origin || !beanType || !grindSize || !mainPic) {
+  if (!name || !price || !description || !region || !weight || !flavor_profile || !grind_option || !roast_level || !image_url || !subPic) {
     return res.status(400).json({ message: 'All required fields must be provided' });
+  }
+
+  // Ensure subPic is a non-empty array
+  if (!Array.isArray(subPic) || subPic.length === 0) {
+    return res.status(400).json({ message: 'subPic must be a non-empty array' });
   }
 
   try {
     const newProduct = new Product({
+      id,
       name,
       price,
       description,
-      category,
-      roastLevel,
-      origin,
-      beanType,
-      grindSize,
-      mainPic,
-      subPics, // subPics is optional
+      region,
+      weight,
+      flavor_profile,
+      grind_option,
+      roast_level,
+      image_url,
+      subPic
     });
 
     const savedProduct = await newProduct.save();
@@ -68,7 +75,5 @@ const createProduct = async (req, res) => {
     res.status(400).json({ message: 'Invalid product data', error: error.message });
   }
 };
-
-
 
 module.exports = { getProducts, getProductById, createProduct };
