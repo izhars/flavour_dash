@@ -3,10 +3,11 @@ const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
 const connectDB = require('../config/db'); // Import the MongoDB connection function
-const authenticateToken = require('../middleware/auth'); // Import the authentication middleware
+const authenticateToken = require('../middleware/userAuthMiddleware'); // Import the authentication middleware
 const productRoutes = require('../routes/productRoutes'); // Import product routes
 const authRoutes = require('../routes/authRoutes'); // Import authentication routes
 const cartRoutes = require('../routes/cartRoutes');
+const adminRoutes = require('../routes/adminRoutes');
 
 // Initialize Express app
 const app = express();
@@ -48,9 +49,10 @@ app.post('/api/upload', authenticateToken, upload.array('images', 10), (req, res
 });
 
 // Use routes
-app.use('/api/products', authenticateToken, productRoutes);
 app.use('/api/auth', authRoutes); // Authentication routes
+app.use('/api/products', authenticateToken, productRoutes);
 app.use('/api', authenticateToken, cartRoutes);
+app.use('/admin', adminRoutes);
 
 // Define a port
 const PORT = process.env.PORT || 5001; // This will use the port defined in the environment or default to 5001

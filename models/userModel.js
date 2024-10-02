@@ -1,23 +1,48 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 
-const googleUserSchema = new mongoose.Schema({
-  googleId: { type: String, required: true, unique: true },
-  email: { type: String, required: true },
-  name: { type: String },
+// Existing User Schemas
+const GoogleUserSchema = new mongoose.Schema({
+    googleId: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true },
+    name: { type: String, required: true },
+    // Other fields...
 });
 
-const phoneUserSchema = new mongoose.Schema({
-  phoneNumber: { type: String, required: true, unique: true },
-  otp: { type: String, default: null },  // Not required after OTP verification
-  otpExpiration: { type: Date, default: null },  // Not required after OTP verification
+const PhoneUserSchema = new mongoose.Schema({
+    phoneNumber: { type: String, required: true, unique: true },
+    otp: { type: String },
+    otpExpiration: { type: Date },
+    // Other fields...
 });
 
+const adminUserSchema = new mongoose.Schema({
+    username: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+    password: {
+        type: String,
+        required: true,
+    },
+});
 
-// Models
-const GoogleUser = mongoose.model('GoogleUser', googleUserSchema);
-const PhoneUser = mongoose.model('PhoneUser', phoneUserSchema);
+// Hash password before saving the admin user
+adminUserSchema.pre('save', async function (next) {
+    if (!this.isModified('password')) return next();
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+});
 
-module.exports = {
-  GoogleUser,
-  PhoneUser
+// Compare password
+adminUserSchema.methods.comparePassword = function (candidatePassword) {
+    return bcrypt.compare(candidatePassword, this.password);
 };
+
+const GoogleUser = mongoose.model('GoogleUser', GoogleUserSchema);
+const PhoneUser = mongoose.model('PhoneUser', PhoneUserSchema);
+const AdminUser = mongoose.model('AdminUser', adminUserSchema);
+
+module.exports = { GoogleUser, PhoneUser, AdminUser };
